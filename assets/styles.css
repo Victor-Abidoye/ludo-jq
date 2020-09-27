@@ -38,7 +38,7 @@ td {
 }
 
 .yellow.home {
-  background-image: url(img/air.png);
+  background-image: url(img/fire.png);
 }
 
 .green.home {
@@ -46,11 +46,11 @@ td {
 }
 
 .blue.home {
-  background-image: url(img/water.png);
+  background-image: url(img/air.png);
 }
 
 .red.home {
-  background-image: url(img/fire.png);
+  background-image: url(img/water.png);
 }
 
 #center {
