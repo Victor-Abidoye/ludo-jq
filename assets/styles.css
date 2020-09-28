@@ -65,6 +65,7 @@ td {
   height: 100%;
   position: absolute;
   top: 0;
+  text-decoration: none;
 }
 
 .piece > div {
