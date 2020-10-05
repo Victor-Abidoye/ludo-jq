@@ -8,7 +8,7 @@
   </head>
   <body>
     <div id="play-area">
-      <table cellspacing="0" cellpadding="0">
+      <table id="board" cellspacing="0" cellpadding="0">
         <tr>
           <td rowspan="6" colspan="6" class="yellow home">
             <a href="#" class="piece">
@@ -178,16 +178,84 @@
         </tr>
       </table>
 
-      <!-- <div id="dice">
+      <div id="dice">
         <div id="die-1" class="die"></div>
         <div id="die-2" class="die"></div>
-      </div> -->
+      </div>
 
-      <!-- <div id="backdrop">
+      <div id="backdrop">
         <div id="options">
-          <button>Button</button>
+          <div>
+            <span>Player 1</span>
+
+            <select data-player-index="0" data-color-index="0">
+              <option value="">-- Choose color --</option>
+              <option class="yellow" selected>Yellow</option>
+              <option class="green">Green</option>
+              <option class="red">Red</option>
+              <option class="blue">Blue</option>
+            </select>
+
+            <select data-player-index="0" data-color-index="1">
+              <option value="">-- Choose second color --</option>
+              <option class="yellow hide">Yellow</option>
+              <option class="green">Green</option>
+              <option class="red">Red</option>
+              <option class="blue">Blue</option>
+            </select>
+          </div>
+
+          <div>
+            <span>Player 2</span>
+
+            <select data-player-index="1" data-color-index="0">
+              <option value="">-- Choose color --</option>
+              <option class="yellow hide">Yellow</option>
+              <option class="green">Green</option>
+              <option class="red">Red</option>
+              <option class="blue">Blue</option>
+            </select>
+
+            <select data-player-index="1" data-color-index="1" disabled>
+              <option value="">-- Choose second color --</option>
+              <option class="yellow hide">Yellow</option>
+              <option class="green">Green</option>
+              <option class="red">Red</option>
+              <option class="blue">Blue</option>
+            </select>
+          </div>
+
+          <div>
+            <span>Player 3</span>
+
+            <select data-player-index="2" data-color-index="0">
+              <option value="">-- Choose color --</option>
+              <option class="yellow hide">Yellow</option>
+              <option class="green">Green</option>
+              <option class="red">Red</option>
+              <option class="blue">Blue</option>
+            </select>
+          </div>
+
+          <div>
+            <span>Player 4</span>
+
+            <select data-player-index="3" data-color-index="0">
+              <option value="">-- Choose color --</option>
+              <option class="yellow hide">Yellow</option>
+              <option class="green">Green</option>
+              <option class="red">Red</option>
+              <option class="blue">Blue</option>
+            </select>
+          </div>
+
+          <hr />
+
+          <div class="buttons">
+            <button id="play">Play &gt;</button>
+          </div>
         </div>
-      </div> -->
+      </div>
     </div>
   </body>
 
@@ -198,5 +266,5 @@
   ></script>
   <script src="https://cdn.jsdelivr.net/gh/ezra-obiwale/jqueryDice/jquery.dice.min.js"></script>
   <!-- <script src="../jqueryDice/jquery.dice.min.js"></script> -->
-  <script src="assets/script.min.js"></script>
+  <script src="assets/script.js"></script>
 </html>

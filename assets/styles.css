@@ -16,6 +16,7 @@ a {
 
 #backdrop {
   background-color: rgba(0, 0, 0, .5);
+  z-index: 2;
 }
 
 #backdrop,
@@ -29,30 +30,33 @@ a {
   align-items: center;
 }
 
-#dice {
-  padding: 5px 0;
-}
-
 #options {
-  width: 20vw;
+  min-width: 20vw;
+  max-width: 80vw;
   background-color: bisque;
   padding: 20px;
 }
 
-#options,
-.die {
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+#options span {
+  margin-right: 10px;
 }
 
-table {
+#options select {
+  margin: 0 5px 5px 0;
+
+}
+
+#options .buttons {
+  text-align: center;
+}
+
+table#board {
   border: 1px solid;
   height: 100%;
   width: 100%;
 }
 
-td {
+table#board td {
   height: calc(100% / 14 + 3px);
   width: calc(100% / 14 + 3px);
   border: 1px solid;
@@ -96,23 +100,23 @@ td#center {
 }
 
 .yellow:not(.home) {
-  background-color: yellow;
+  background-color: yellow !important;
 }
 
 .green:not(.home) {
-  background-color: green;
+  background-color: green !important;
 }
 
 .blue:not(.home) {
-  background-color: blue;
+  background-color: blue !important;
 }
 
 .red:not(.home) {
-  background-color: red;
+  background-color: red !important;
 }
 
 .home {
-  background-color: bisque;
+  background-color: bisque !important;
   background-size: cover;
   position: relative;
 }
@@ -190,12 +194,16 @@ td#center {
 
 .dice {
   position: absolute !important;
+  padding: 5px 0;
 }
 
 .die {
   position: absolute;
   height: calc(100% / 14 + 3px);
   width: calc(100% / 14 + 3px);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 #die-1 {
@@ -204,6 +212,10 @@ td#center {
 
 #die-2 {
   right: 50vh;
+}
+
+.hide {
+  display: none !important;
 }
 
 @media (max-width: 767px) {
@@ -233,5 +245,13 @@ td#center {
 
   #options {
     width: 90vw;
+  }
+
+  #options > div {
+    margin-bottom: 10px;
+  }
+
+  #options select {
+    margin-bottom: 10px;
   }
 }
