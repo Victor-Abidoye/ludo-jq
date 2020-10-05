@@ -1,9 +1,3 @@
-let players = [
-  { colors: ['Yellow'], rollsBeforeFirstSix: 0 },
-  { colors: [], rollsBeforeFirstSix: 0 },
-  { colors: [], rollsBeforeFirstSix: 0 },
-  { colors: [], rollsBeforeFirstSix: 0 },
-]
 $(function () {
   const DIE_ROLL_DURATION = 1000
   const rolled = {
@@ -11,26 +5,135 @@ $(function () {
     second: 0,
   }
 
-  if (window.localStorage) {
-    const savedPlayers = localStorage.getItem('players')
+  const $backdrop = $('#backdrop')
+  const $centerMessage = $('#center .message')
+  const $movements = $('#movements')
+  const $movementMessage = $movements.find('.message')
 
-    if (savedPlayers) {
-      players = JSON.parse(savedPlayers)
+  let players = [
+    { colors: ['Yellow'], rollsBeforeFirstSix: 0 },
+    { colors: [], rollsBeforeFirstSix: 0 },
+    { colors: [], rollsBeforeFirstSix: 0 },
+    { colors: [], rollsBeforeFirstSix: 0 },
+  ]
 
-      players.forEach(({ colors }, playerIndex) =>
-        colors.forEach((color, colorIndex) => {
-          const selector = `select[data-player-index="${playerIndex}"][data-color-index="${colorIndex}"]`
+  let currentPlayer = -1
 
-          $(selector).val(color).trigger('change')
-        })
-      )
-    }
-  }
+  let $pieceToMove = null
 
   let playablePlayers = []
 
+  const $die1 = $('#die-1').dice({
+    duration: DIE_ROLL_DURATION,
+    imageUrl: './assets/img/dice.png',
+    value: 6,
+  })
+
+  const $die2 = $('#die-2').dice({
+    duration: DIE_ROLL_DURATION,
+    imageUrl: './assets/img/dice.png',
+    value: 6,
+  })
+
+  const nextPlayer = () => {
+    $('.roll-dice').removeClass('hide')
+    $('.roll').addClass('hide')
+    $backdrop.addClass('hide')
+
+    currentPlayer++
+
+    if (currentPlayer === playablePlayers.length) {
+      currentPlayer = 0
+    }
+
+    const player = players[currentPlayer]
+
+    player.colors.forEach((color) => {
+      color = color.toLowerCase()
+
+      $(`.home.${color} .roll`).removeClass('hide')
+    })
+  }
+
+  const diceRolled = () => {
+    if (!rolled.first || !rolled.second) {
+      return
+    }
+
+    const player = players[currentPlayer]
+
+    let stepPieces = 0
+
+    player.colors.forEach((color) => {
+      color = color.toLowerCase()
+
+      if (rolled.first === 6 || rolled.second === 6) {
+        $(`.home.${color} .piece-cover`).addClass('hide')
+      }
+
+      $(`.piece.${color}`)
+        .addClass('active')
+        .siblings('.piece-cover')
+        .addClass('hide')
+
+      stepPieces += $(`.step .piece.${color}`).length
+    })
+
+    if (!stepPieces && rolled.first !== 6 && rolled.second !== 6) {
+      $backdrop.removeClass('hide')
+      $movements.children('.move').addClass('hide')
+
+      return $movementMessage
+        .removeClass('hide')
+        .children('span')
+        .text('You need a 6 to get your piece into the action.')
+    }
+
+    $('#movements > .first > div').text(rolled.first)
+    $('#movements > .second > div').text(rolled.second)
+
+    $centerMessage
+      .text(`Select a ${player.colors.join(' or ')} piece to move.`)
+      .removeClass('hide')
+  }
+
+  const move = (steps) => {
+    if (!steps) {
+      return
+    }
+
+    const kclass = $pieceToMove.closest('td').attr('class').split(' ')
+    let currentSpot = parseInt(kclass[kclass.length - 1])
+
+    $(`td.${++currentSpot}`).prepend($pieceToMove.remove())
+
+    setTimeout(move, 300, --steps)
+  }
+
   $('a').click(function (e) {
     e.preventDefault()
+
+    const $this = $(this)
+
+    if ($this.hasClass('piece')) {
+      $pieceToMove = $this
+
+      $backdrop.removeClass('hide').children('#movements').removeClass('hide')
+    } else if ($this.hasClass('move')) {
+      let steps = 0
+
+      if ($this.hasClass('first')) {
+        steps = rolled.first
+        rolled.first = 0
+      } else {
+        steps = rolled.second
+        rolled.second = 0
+      }
+
+      $centerMessage.text(`Moving ${steps} steps`)
+
+      move(steps)
+    }
   })
 
   $('#options select').change(function () {
@@ -112,29 +215,56 @@ $(function () {
       localStorage.setItem('players', JSON.stringify(players))
     }
 
-    $('#backdrop').addClass('hide')
+    $backdrop
+      .addClass('hide')
+      .find('#options')
+      .addClass('hide')
+      .siblings('#movements')
+      .removeClass('hide')
+
+    nextPlayer()
   })
 
-  const $die1 = $('#die-1').dice({
-    duration: DIE_ROLL_DURATION,
-    imageUrl: './assets/img/dice.png',
-    value: 6,
-  })
-
-  const $die2 = $('#die-2').dice({
-    duration: DIE_ROLL_DURATION,
-    imageUrl: './assets/img/dice.png',
-    value: 6,
-  })
-
-  $('#dice').click(function () {
+  $('.roll').click(function () {
     if (!playablePlayers.length) {
       return
     }
 
-    $die1.dice('roll', (val) => (rolled.first = val))
-    $die2.dice('roll', (val) => (rolled.second = val))
+    $('.roll').addClass('hide')
+
+    rolled.first = 0
+    rolled.second = 0
+
+    $die1.dice('roll', (val) => {
+      rolled.first = val
+      diceRolled()
+    })
+
+    $die2.dice('roll', (val) => {
+      rolled.second = val
+      diceRolled()
+    })
   })
+
+  $('#movements button').click(function () {
+    nextPlayer()
+  })
+
+  if (window.localStorage) {
+    let savedPlayers = localStorage.getItem('players')
+
+    if (savedPlayers) {
+      savedPlayers = JSON.parse(savedPlayers)
+
+      savedPlayers.forEach(({ colors }, playerIndex) => {
+        colors.forEach((color, colorIndex) => {
+          const selector = `select[data-player-index="${playerIndex}"][data-color-index="${colorIndex}"]`
+
+          $(selector).val(color).trigger('change')
+        })
+      })
+    }
+  }
 
   window.onbeforeunload = function (e) {
     if (playablePlayers.length) {
