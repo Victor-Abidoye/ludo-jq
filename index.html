@@ -11,45 +11,29 @@
       <table id="board" cellspacing="0" cellpadding="0">
         <tr>
           <td rowspan="6" colspan="6" class="yellow home">
-            <a href="#" class="piece">
-              <div class="yellow">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="yellow">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="yellow">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="yellow">&nbsp;</div>
-            </a>
+            <a href="#" class="piece yellow" data-color="yellow"></a>
+            <a href="#" class="piece yellow" data-color="yellow"></a>
+            <a href="#" class="piece yellow" data-color="yellow"></a>
+            <a href="#" class="piece yellow" data-color="yellow"></a>
 
             <div class="piece-cover">
               <button class="roll hide">ROLL DICE</button>
             </div>
           </td>
-          <td class="step 11">
+          <td data-step="11" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 12 green-corridor">
+          <td data-step="12" class="step corridor-entrance green">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 13">
+          <td data-step="13" class="step">
             <div class="piece-cover"></div>
           </td>
           <td rowspan="6" colspan="6" class="green home">
-            <a href="#" class="piece">
-              <div class="green">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="green">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="green">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="green">&nbsp;</div>
-            </a>
+            <a href="#" class="piece green" data-color="green"></a>
+            <a href="#" class="piece green" data-color="green"></a>
+            <a href="#" class="piece green" data-color="green"></a>
+            <a href="#" class="piece green" data-color="green"></a>
 
             <div class="piece-cover">
               <button class="roll hide">ROLL DICE</button>
@@ -57,222 +41,206 @@
           </td>
         </tr>
         <tr>
-          <td class="step 10">
+          <td data-step="10" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="green step corridor-1">
+          <td data-step="1" class="step corridor green">
             <div class="piece-cover"></div>
           </td>
-          <td class="green step 14">
-            <div class="piece-cover"></div>
-          </td>
-        </tr>
-        <tr>
-          <td class="step 9">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="green step corridor-2">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="step 15">
+          <td data-step="14" class="step start green">
             <div class="piece-cover"></div>
           </td>
         </tr>
         <tr>
-          <td class="step 8">
+          <td data-step="9" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="green step corridor-3">
+          <td data-step="2" class="step corridor green">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 16">
-            <div class="piece-cover"></div>
-          </td>
-        </tr>
-        <tr>
-          <td class="step 7">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="green step corridor-4">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="step 17">
+          <td data-step="15" class="step">
             <div class="piece-cover"></div>
           </td>
         </tr>
         <tr>
-          <td class="step 6">
+          <td data-step="8" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="green step corridor-5">
+          <td data-step="3" class="step corridor green">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 18">
+          <td data-step="16" class="step">
             <div class="piece-cover"></div>
           </td>
         </tr>
         <tr>
-          <td class="step 52">
+          <td data-step="7" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="yellow step 1">
+          <td data-step="4" class="step corridor green">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 2">
+          <td data-step="17" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 3">
+        </tr>
+        <tr>
+          <td data-step="6" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 4">
+          <td data-step="5" class="step corridor green">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 5">
+          <td data-step="18" class="step">
+            <div class="piece-cover"></div>
+          </td>
+        </tr>
+        <tr>
+          <td data-step="52" class="step">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="1" class="step start yellow">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="2" class="step">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="3" class="step">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="4" class="step">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="5" class="step">
             <span class="arrow ne">&rarr;</span>
             <div class="piece-cover"></div>
           </td>
           <td id="center" class="home" rowspan="3" colspan="3">
             <div class="message hide"></div>
           </td>
-          <td class="step 19">
+          <td data-step="19" class="step">
             <span class="arrow se">&rarr;</span>
             <div class="piece-cover"></div>
           </td>
-          <td class="step 20">
+          <td data-step="20" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 21">
+          <td data-step="21" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 22">
+          <td data-step="22" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 23">
+          <td data-step="23" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 24">
-            <div class="piece-cover"></div>
-          </td>
-        </tr>
-        <tr>
-          <td class="step 51 yellow-corridor">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="yellow step corridor-1">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="yellow step corridor-2">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="yellow step corridor-3">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="yellow step corridor-4">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="yellow step corridor-5">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="red step corridor-5">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="red step corridor-4">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="red step corridor-3">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="red step corridor-2">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="red step corridor-1">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="25 step red-corridor">
+          <td data-step="24" class="step">
             <div class="piece-cover"></div>
           </td>
         </tr>
         <tr>
-          <td class="step 50">
+          <td data-step="51" class="step corridor-entrance yellow">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 49">
+          <td data-step="1" class="step corridor yellow">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 48">
+          <td data-step="2" class="step corridor yellow">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 47">
+          <td data-step="3" class="step corridor yellow">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 46">
+          <td data-step="4" class="step corridor yellow">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 45">
+          <td data-step="5" class="step corridor yellow">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="5" class="step corridor red">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="4" class="step corridor red">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="3" class="step corridor red">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="2" class="step corridor red">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="1" class="step corridor red">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="25" class="step corridor-entrance red">
+            <div class="piece-cover"></div>
+          </td>
+        </tr>
+        <tr>
+          <td data-step="50" class="step">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="49" class="step">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="48" class="step">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="47" class="step">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="46" class="step">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="45" class="step">
             <span class="arrow nw">&rarr;</span>
             <div class="piece-cover"></div>
           </td>
-          <td class="step 31">
+          <td data-step="31" class="step">
             <span class="arrow sw">&rarr;</span>
             <div class="piece-cover"></div>
           </td>
-          <td class="step 30">
+          <td data-step="30" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 29">
+          <td data-step="29" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 28">
+          <td data-step="28" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="red step 27">
+          <td data-step="27" class="step start red">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 26">
+          <td data-step="26" class="step">
             <div class="piece-cover"></div>
           </td>
         </tr>
         <tr>
           <td rowspan="6" colspan="6" class="blue home">
-            <a href="#" class="piece">
-              <div class="blue">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="blue">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="blue">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="blue">&nbsp;</div>
-            </a>
+            <a href="#" class="piece blue" data-color="blue"></a>
+            <a href="#" class="piece blue" data-color="blue"></a>
+            <a href="#" class="piece blue" data-color="blue"></a>
+            <a href="#" class="piece blue" data-color="blue"></a>
 
             <div class="piece-cover">
               <button class="roll hide">ROLL DICE</button>
             </div>
           </td>
-          <td class="step 44">
+          <td data-step="44" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="blue step corridor-5">
+          <td data-step="5" class="step corridor blue">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 32">
+          <td data-step="32" class="step">
             <div class="piece-cover"></div>
           </td>
           <td rowspan="6" colspan="6" class="red home">
-            <a href="#" class="piece">
-              <div class="red">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="red">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="red">&nbsp;</div>
-            </a>
-            <a href="#" class="piece">
-              <div class="red">&nbsp;</div>
-            </a>
+            <a href="#" class="piece red" data-color="red"></a>
+            <a href="#" class="piece red" data-color="red"></a>
+            <a href="#" class="piece red" data-color="red"></a>
+            <a href="#" class="piece red" data-color="red"></a>
 
             <div class="piece-cover">
               <button class="roll hide">ROLL DICE</button>
@@ -280,57 +248,57 @@
           </td>
         </tr>
         <tr>
-          <td class="step 43">
+          <td data-step="43" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="blue step corridor-4">
+          <td data-step="4" class="step corridor blue">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 33">
-            <div class="piece-cover"></div>
-          </td>
-        </tr>
-        <tr>
-          <td class="step 42">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="blue step corridor-3">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="step 34">
+          <td data-step="33" class="step">
             <div class="piece-cover"></div>
           </td>
         </tr>
         <tr>
-          <td class="step 41">
+          <td data-step="42" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="blue step corridor-2">
+          <td data-step="3" class="step corridor blue">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 35">
-            <div class="piece-cover"></div>
-          </td>
-        </tr>
-        <tr>
-          <td class="blue step 40">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="blue step corridor-1">
-            <div class="piece-cover"></div>
-          </td>
-          <td class="step 36">
+          <td data-step="34" class="step">
             <div class="piece-cover"></div>
           </td>
         </tr>
         <tr>
-          <td class="step 39">
+          <td data-step="41" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 38 blue-corridor">
+          <td data-step="2" class="step corridor blue">
             <div class="piece-cover"></div>
           </td>
-          <td class="step 37">
+          <td data-step="35" class="step">
+            <div class="piece-cover"></div>
+          </td>
+        </tr>
+        <tr>
+          <td data-step="40" class="step start blue">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="1" class="step corridor blue">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="36" class="step">
+            <div class="piece-cover"></div>
+          </td>
+        </tr>
+        <tr>
+          <td data-step="39" class="step">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="38" class="step corridor-entrance blue">
+            <div class="piece-cover"></div>
+          </td>
+          <td data-step="37" class="step">
             <div class="piece-cover"></div>
           </td>
         </tr>
@@ -418,7 +386,16 @@
           <a href="#" class="first move">
             <div></div>
           </a>
+
+          <span class="sign"> + </span>
+
           <a href="#" class="second move">
+            <div></div>
+          </a>
+
+          <span class="sign"> = </span>
+
+          <a href="#" class="sum move">
             <div></div>
           </a>
 

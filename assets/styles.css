@@ -16,7 +16,7 @@ a {
 
 #backdrop {
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 2;
+  z-index: 9;
 }
 
 #backdrop,
@@ -156,6 +156,8 @@ td#center .message {
   top: 0;
   text-decoration: none;
   z-index: 2;
+  border: 1px solid;
+  border-radius: 100px;
 }
 
 .piece.active {
@@ -171,6 +173,7 @@ td#center .message {
 .home .piece {
   width: 20%;
   height: auto;
+  padding-bottom: 20%;
 }
 
 .home .piece > div {
@@ -204,13 +207,8 @@ td#center .message {
   padding-bottom: 0;
 }
 
-.home .piece-cover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
+.step.blue .piece.blue {
+  border-color: whitesmoke;
 }
 
 .home .roll {
@@ -220,6 +218,15 @@ td#center .message {
   border-radius: 16px;
   left: calc(50% - 65px);
   top: calc(50% - 30px);
+}
+
+.piece-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
 }
 
 #dice {
@@ -258,6 +265,12 @@ td#center .message {
 #movements .move {
   padding: 20px;
   border: 2px dashed;
+}
+
+#movements .moved,
+#movements .not-movable {
+  background-color: darkgray;
+  border-width: 1px;
 }
 
 #movements .message {
