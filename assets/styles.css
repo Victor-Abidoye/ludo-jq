@@ -207,17 +207,30 @@ td#center .message {
   padding-bottom: 0;
 }
 
-.step.blue .piece.blue {
+.step.blue .piece.blue,
+.step.green .piece.green {
   border-color: whitesmoke;
 }
 
-.home .roll {
+.home .roll,
+.home .playing {
   position: absolute;
-  background-color: tomato;
   padding: 16px;
   border-radius: 16px;
   left: calc(50% - 65px);
   top: calc(50% - 30px);
+}
+
+.home .roll {
+  background-color: tomato;
+}
+
+.home .playing {
+  background-color: sienna;
+  color: aliceblue;
+  animation-name: playing;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
 }
 
 .piece-cover {
@@ -254,21 +267,40 @@ td#center .message {
   right: 50vh;
 }
 
-#movements {
+#movements,
+.moves {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+}
+
+#movements {
   position: absolute;
   top: 60%;
 }
 
-#movements .move {
+.moves .close {
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  padding: 6px 12px;
+  border: 1px solid darkred;
+  background-color: darkred;
+  color: whitesmoke;
+  border-radius: 20px;
+}
+
+.moves .sign {
+  padding: 5px;
+}
+
+.moves .move {
   padding: 20px;
   border: 2px dashed;
 }
 
-#movements .moved,
-#movements .not-movable {
+.moves .moved,
+.moves .not-movable {
   background-color: darkgray;
   border-width: 1px;
 }
@@ -283,6 +315,16 @@ td#center .message {
 
 .hide {
   display: none !important;
+}
+
+@keyframes playing {
+  from {
+    background-color: sienna;
+  }
+
+  to {
+    background-color: slategrey;
+  }
 }
 
 @media (max-width: 767px) {

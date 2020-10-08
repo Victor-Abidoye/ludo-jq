@@ -16,6 +16,8 @@
             <a href="#" class="piece yellow" data-color="yellow"></a>
             <a href="#" class="piece yellow" data-color="yellow"></a>
 
+            <div class="playing hide">PLAYING</div>
+
             <div class="piece-cover">
               <button class="roll hide">ROLL DICE</button>
             </div>
@@ -23,7 +25,7 @@
           <td data-step="11" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td data-step="12" class="step corridor-entrance green">
+          <td data-step="12" data-color="green" class="step corridor-entrance">
             <div class="piece-cover"></div>
           </td>
           <td data-step="13" class="step">
@@ -34,6 +36,8 @@
             <a href="#" class="piece green" data-color="green"></a>
             <a href="#" class="piece green" data-color="green"></a>
             <a href="#" class="piece green" data-color="green"></a>
+
+            <div class="playing hide">PLAYING</div>
 
             <div class="piece-cover">
               <button class="roll hide">ROLL DICE</button>
@@ -139,7 +143,7 @@
           </td>
         </tr>
         <tr>
-          <td data-step="51" class="step corridor-entrance yellow">
+          <td data-step="51" data-color="yellow" class="step corridor-entrance">
             <div class="piece-cover"></div>
           </td>
           <td data-step="1" class="step corridor yellow">
@@ -172,7 +176,7 @@
           <td data-step="1" class="step corridor red">
             <div class="piece-cover"></div>
           </td>
-          <td data-step="25" class="step corridor-entrance red">
+          <td data-step="25" data-color="red" class="step corridor-entrance">
             <div class="piece-cover"></div>
           </td>
         </tr>
@@ -223,6 +227,8 @@
             <a href="#" class="piece blue" data-color="blue"></a>
             <a href="#" class="piece blue" data-color="blue"></a>
 
+            <div class="playing hide">PLAYING</div>
+
             <div class="piece-cover">
               <button class="roll hide">ROLL DICE</button>
             </div>
@@ -241,6 +247,8 @@
             <a href="#" class="piece red" data-color="red"></a>
             <a href="#" class="piece red" data-color="red"></a>
             <a href="#" class="piece red" data-color="red"></a>
+
+            <div class="playing hide">PLAYING</div>
 
             <div class="piece-cover">
               <button class="roll hide">ROLL DICE</button>
@@ -295,7 +303,7 @@
           <td data-step="39" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td data-step="38" class="step corridor-entrance blue">
+          <td data-step="38" data-color="blue" class="step corridor-entrance">
             <div class="piece-cover"></div>
           </td>
           <td data-step="37" class="step">
@@ -383,21 +391,25 @@
         </div>
 
         <div id="movements" class="hide">
-          <a href="#" class="first move">
-            <div></div>
-          </a>
+          <div class="moves">
+            <a href="#" class="first move">
+              <div></div>
+            </a>
 
-          <span class="sign"> + </span>
+            <span class="sign"> + </span>
 
-          <a href="#" class="second move">
-            <div></div>
-          </a>
+            <a href="#" class="second move">
+              <div></div>
+            </a>
 
-          <span class="sign"> = </span>
+            <span class="sign"> = </span>
 
-          <a href="#" class="sum move">
-            <div></div>
-          </a>
+            <a href="#" class="sum move">
+              <div></div>
+            </a>
+
+            <a href="#" class="close">x</a>
+          </div>
 
           <div class="message hide">
             <span></span>

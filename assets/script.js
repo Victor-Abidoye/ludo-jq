@@ -37,7 +37,9 @@ class Ludo {
     }
   }
 
-  celebrateExit(piece) {}
+  celebrateExit(piece) {
+    alert(`Hooray!!! A ${$(piece).data('color')} piece is out!!!`)
+  }
 
   countMovablePieces() {
     const player = this.getCurrentPlayer()
@@ -80,8 +82,16 @@ class Ludo {
     ]
     this.playablePlayers = []
 
+    this.corridorEntrances = {
+      yellow: 51,
+      green: 12,
+      red: 25,
+      blue: 38,
+    }
     this.movablePieces = 0
     this.piecesSelector = ''
+    this.possibleMoves = 2
+    this.doubleSixes = 0
 
     this.currentPlayer = -1
     this.$pieceToMove = null
@@ -108,9 +118,10 @@ class Ludo {
     this.$rollBtns = this.getRef('.roll')
 
     this.$movements = this.$backdrop.find('#movements')
-    this.$movementMessage = this.$movements.find('.message')
-    this.$movementBtn = this.$movementMessage.find('button')
-    this.$options = this.$backdrop.find('#options')
+    this.$moves = this.$movements.children('.moves')
+    this.$movementMessage = this.$movements.children('.message')
+    this.$movementBtn = this.$movementMessage.children('button')
+    this.$options = this.$backdrop.children('#options')
     this.$optionSelects = this.$options.find('select')
     this.$playBtn = this.$options.find('#play')
   }
@@ -122,6 +133,16 @@ class Ludo {
 
     this.countMovablePieces()
 
+    if (this.rolled.first === 6 && this.rolled.second === 6) {
+      this.doubleSixes++
+
+      this.$centerMessage
+        .html('You rolled double 6. Roll more')
+        .removeClass('hide')
+
+      return this.nextPlayer()
+    }
+
     // no moves
     if (
       !this.movablePieces &&
@@ -130,7 +151,7 @@ class Ludo {
     ) {
       this.$backdrop.removeClass('hide')
       this.$movements.removeClass('hide')
-      this.$movements.find('.move').addClass('hide')
+      this.$moves.addClass('hide')
 
       return this.$movementMessage
         .removeClass('hide')
@@ -161,22 +182,51 @@ class Ludo {
     return this.$container.find(selector)
   }
 
+  canMakeCorridorMove(move) {
+    const pieceColor = this.$pieceToMove.data('color')
+    const pieceInCorridor = this.$pieceToMove.parent().hasClass('corridor')
+    const currentSpotNumber = parseInt(this.$pieceToMove.parent().data('step'))
+
+    if (pieceInCorridor) {
+      return currentSpotNumber + move <= 5
+    } else {
+      return move <= this.corridorEntrances[pieceColor] - currentSpotNumber + 6
+    }
+  }
+
   move(steps) {
-    if (!steps) {
-      if (this.rolled.first || this.rolled.second) {
-        this.activatePieces()
+    if (!steps || !this.possibleMoves) {
+      if (this.possibleMoves) {
+        if (this.rolled.first || this.rolled.second) {
+          this.activatePieces()
+        } else if (this.doubleSixes) {
+          this.doubleSixes--
+          this.rolled.first = this.rolled.second = 6
+          this.showMoves()
+        }
       } else {
+        this.rolled.first = this.rolled.second = null
         this.nextPlayer()
       }
 
       return
     }
 
-    if (steps === 6 && this.$pieceToMove.parent('.home').length) {
+    this.possibleMoves--
+
+    if (steps >= 6 && this.$pieceToMove.parent('.home').length) {
       this.getRef(`td.start.${this.$pieceToMove.data('color')}`).append(
         this.$pieceToMove.detach()
       )
-      return this.activatePieces()
+
+      if (steps > 6) {
+        setTimeout(() => {
+          this.move(steps - 6)
+        }, 300)
+      } else {
+        this.activatePieces()
+      }
+      return
     }
 
     this.activatePieces(false)
@@ -188,7 +238,8 @@ class Ludo {
     let nextSpotSelector = `td.step[data-step="${nextSpotNumber}"]:not(.corridor)`
 
     if (
-      this.$pieceToMove.parent().hasClass(`corridor-entrance ${pieceColor}`)
+      this.$pieceToMove.parent().hasClass(`corridor-entrance`) &&
+      this.$pieceToMove.parent().data('color') === pieceColor
     ) {
       nextSpotSelector = `td.step.corridor.${pieceColor}[data-step="1"]`
     } else if (this.$pieceToMove.parent().hasClass('corridor')) {
@@ -197,26 +248,14 @@ class Ludo {
 
     const $nextSpot = this.getRef(nextSpotSelector)
 
-    console.log(
-      'current number',
-      currentSpotNumber,
-      'color',
-      pieceColor,
-      'next number',
-      nextSpotNumber,
-      'selector',
-      nextSpotSelector,
-      $nextSpot
-    )
-
     if ($nextSpot.length) {
       $nextSpot.append(this.$pieceToMove.detach())
     }
     // Piece won from corridor
-    else if (this.$pieceToMove.hasClass('corridor')) {
+    else if (this.$pieceToMove.parent().hasClass('corridor')) {
       this.$pieceToMove.addClass('hide')
 
-      this.celebrateExit(this.$pieceToMove)
+      setTimeout(() => this.celebrateExit(this.$pieceToMove))
     }
     // Invalid move
     else {
@@ -231,16 +270,24 @@ class Ludo {
   }
 
   nextPlayer() {
+    this.possibleMoves = 2
     this.$backdrop.addClass('hide')
 
     this.getRef('.piece.active')
       .removeClass('active')
       .siblings('.piece-cover')
       .removeClass('hide')
-    this.$rollBtns.addClass('hide')
+    this.$rollBtns
+      .addClass('hide')
+      .parent()
+      .siblings('.playing')
+      .addClass('hide')
     this.$backdrop.addClass('hide')
 
-    this.currentPlayer++
+    if (!this.doubleSixes) {
+      this.$centerMessage.addClass('hide')
+      this.currentPlayer++
+    }
 
     if (this.currentPlayer === this.playablePlayers.length) {
       this.currentPlayer = 0
@@ -254,6 +301,14 @@ class Ludo {
   }
 
   reset() {
+    // returns pieces to home
+    this.getRef('.step .piece').each(function () {
+      const $this = $(this)
+      const color = $this.data('color')
+
+      this.getRef(`.home.${color}`).append($this.removeClass('hide').detach())
+    })
+    this.createDefaults()
     this.$playBtn.focus()
   }
 
@@ -311,8 +366,15 @@ class Ludo {
         }
 
         ludo.$centerMessage.text(`Moving ${steps} steps`).removeClass('hide')
+        ludo.$backdrop.addClass('hide')
+
+        ludo
+          .getRef(`.home.${ludo.$pieceToMove.data('color')} .playing`)
+          .removeClass('hide')
 
         ludo.move(steps)
+      } else if ($this.hasClass('close')) {
+        ludo.$backdrop.addClass('hide')
       }
     })
 
@@ -418,6 +480,7 @@ class Ludo {
       }
 
       ludo.$rollBtns.addClass('hide')
+      $(this).parent().siblings('.playing').removeClass('hide')
 
       ludo.rolled.first = 0
       ludo.rolled.second = 0
@@ -435,7 +498,7 @@ class Ludo {
   }
 
   showMoves() {
-    this.$movements.children('.move').addClass('hide')
+    this.$moves.addClass('hide')
     this.$movementMessage.addClass('hide')
     this.$centerMessage.addClass('hide')
 
@@ -452,45 +515,59 @@ class Ludo {
     this.$backdrop.removeClass('hide')
 
     if (this.rolled.first) {
-      const $move = this.$movements
+      const $move = this.$moves
         .children('.first')
         .removeClass('moved not-movable')
 
       $move.children('div').text(this.rolled.first)
 
-      if (!this.movablePieces && this.rolled.first !== 6) {
+      if (
+        ((!this.movablePieces || this.$pieceToMove.parent('.home').length) &&
+          this.rolled.first !== 6) ||
+        !this.canMakeCorridorMove(sum)
+      ) {
         $move.addClass('not-movable')
       }
     } else {
-      this.$movements.children('.first').addClass('moved')
+      this.$moves.children('.first').addClass('moved')
     }
 
     if (this.rolled.second) {
-      const $move = this.$movements
+      const $move = this.$moves
         .children('.second')
         .removeClass('moved not-movable')
 
       $move.children('div').text(this.rolled.second)
 
-      if (!this.movablePieces && this.rolled.second !== 6) {
+      if (
+        ((!this.movablePieces || this.$pieceToMove.parent('.home').length) &&
+          this.rolled.second !== 6) ||
+        !this.canMakeCorridorMove(sum)
+      ) {
         $move.addClass('not-movable')
       }
     } else {
-      this.$movements.children('.second').addClass('moved')
+      this.$moves.children('.second').addClass('moved')
     }
 
     if (this.rolled.first && this.rolled.second) {
-      const $move = this.$movements
+      const sum = this.rolled.first + this.rolled.second
+
+      const $move = this.$moves
         .children('.sum')
         .removeClass('moved not-movable')
 
-      $move.children('div').text(this.rolled.first + this.rolled.second)
+      $move.children('div').text(sum)
 
-      if (!this.movablePieces) {
+      // sum exceed required to exit game
+      if (!this.canMakeCorridorMove(sum)) {
         $move.addClass('not-movable')
+        if (this.movablePieces === 1) {
+          this.possibleMoves = 1
+        }
       }
     } else {
-      this.$movements.children('.sum').addClass('moved')
+      this.$moves.children('.sum').addClass('moved')
     }
 
     if (
@@ -501,7 +578,7 @@ class Ludo {
     ) {
     }
 
-    this.$movements.children('.move').removeClass('hide')
+    this.$moves.removeClass('hide')
   }
 }
 
