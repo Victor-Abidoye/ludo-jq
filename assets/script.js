@@ -9,9 +9,16 @@ class Ludo {
     this.createDice()
     this.setupEvents()
     this.restorePlayers()
+
+    this.$playBtn.focus()
   }
 
   activatePieces(state = true) {
+    if (!this.possibleMoves) {
+      this.rolled.first = this.rolled.second = null
+      return this.nextPlayer()
+    }
+
     this.$backdrop.addClass('hide')
 
     const player = this.getCurrentPlayer()
@@ -38,7 +45,9 @@ class Ludo {
   }
 
   celebrateExit(piece) {
-    alert(`Hooray!!! A ${$(piece).data('color')} piece is out!!!`)
+    setTimeout(() =>
+      alert(`Hooray!!! A ${$(piece).data('color')} piece is out!!!`)
+    )
   }
 
   countMovablePieces() {
@@ -126,6 +135,22 @@ class Ludo {
     this.$playBtn = this.$options.find('#play')
   }
 
+  debug(color, count) {
+    if (!color) {
+      return
+    }
+
+    this.getRef(`.piece.${color}`).each((i, piece) => {
+      if (i >= count) {
+        return
+      }
+
+      this.getRef(`.corridor.${color}[data-step="${i + 1}"]`).append(
+        $(piece).detach()
+      )
+    })
+  }
+
   diceRolled() {
     if (!this.rolled.first || !this.rolled.second) {
       return
@@ -182,37 +207,48 @@ class Ludo {
     return this.$container.find(selector)
   }
 
+  hideUnmovablePieces() {
+    this.getRef('.piece').addClass('hide')
+
+    this.playablePlayers.forEach(({ colors }) => {
+      colors.forEach((color) => {
+        this.getRef(`.piece.${color.toLowerCase()}`).removeClass('hide')
+      })
+    })
+  }
+
   canMakeCorridorMove(move) {
     const pieceColor = this.$pieceToMove.data('color')
-    const pieceInCorridor = this.$pieceToMove.parent().hasClass('corridor')
-    const currentSpotNumber = parseInt(this.$pieceToMove.parent().data('step'))
+    const $pieceBox = this.$pieceToMove.parent()
+
+    if (!$pieceBox.hasClass('step')) {
+      return true
+    }
+
+    const pieceInCorridor = $pieceBox.hasClass('corridor')
+    const currentSpotNumber = parseInt($pieceBox.data('step'))
 
     if (pieceInCorridor) {
-      return currentSpotNumber + move <= 5
+      return currentSpotNumber + move <= 6
     } else {
       return move <= this.corridorEntrances[pieceColor] - currentSpotNumber + 6
     }
   }
 
   move(steps) {
-    if (!steps || !this.possibleMoves) {
-      if (this.possibleMoves) {
-        if (this.rolled.first || this.rolled.second) {
-          this.activatePieces()
-        } else if (this.doubleSixes) {
-          this.doubleSixes--
-          this.rolled.first = this.rolled.second = 6
-          this.showMoves()
-        }
+    if (!steps) {
+      if (this.rolled.first || this.rolled.second) {
+        this.activatePieces()
+      } else if (this.doubleSixes) {
+        this.doubleSixes--
+        this.rolled.first = this.rolled.second = 6
+        this.showMoves()
       } else {
-        this.rolled.first = this.rolled.second = null
         this.nextPlayer()
       }
 
       return
     }
-
-    this.possibleMoves--
 
     if (steps >= 6 && this.$pieceToMove.parent('.home').length) {
       this.getRef(`td.start.${this.$pieceToMove.data('color')}`).append(
@@ -309,7 +345,6 @@ class Ludo {
       this.getRef(`.home.${color}`).append($this.removeClass('hide').detach())
     })
     this.createDefaults()
-    this.$playBtn.focus()
   }
 
   restorePlayers() {
@@ -317,15 +352,17 @@ class Ludo {
       let savedPlayers = localStorage.getItem('players')
 
       if (savedPlayers) {
-        savedPlayers = JSON.parse(savedPlayers)
+        try {
+          savedPlayers = JSON.parse(savedPlayers)
 
-        savedPlayers.forEach(({ colors }, playerIndex) => {
-          colors.forEach((color, colorIndex) => {
-            const selector = `select[data-player-index="${playerIndex}"][data-color-index="${colorIndex}"]`
+          savedPlayers.forEach(({ colors }, playerIndex) => {
+            colors.forEach((color, colorIndex) => {
+              const selector = `select[data-player-index="${playerIndex}"][data-color-index="${colorIndex}"]`
 
-            this.getRef(selector).val(color).trigger('change')
+              this.getRef(selector).val(color).trigger('change')
+            })
           })
-        })
+        } catch (e) {}
       }
     }
   }
@@ -353,6 +390,8 @@ class Ludo {
       } else if ($this.hasClass('move') && !$this.hasClass('not-movable')) {
         let steps = 0
 
+        ludo.possibleMoves--
+
         if ($this.hasClass('first')) {
           steps = ludo.rolled.first
           ludo.rolled.first = null
@@ -363,6 +402,7 @@ class Ludo {
           steps = ludo.rolled.first + ludo.rolled.second
           ludo.rolled.first = null
           ludo.rolled.second = null
+          ludo.possibleMoves = 0
         }
 
         ludo.$centerMessage.text(`Moving ${steps} steps`).removeClass('hide')
@@ -451,8 +491,9 @@ class Ludo {
     })
 
     this.$playBtn.click(function () {
-      ludo.extractPlayablePlayers()
       ludo.savePlayers()
+      ludo.extractPlayablePlayers()
+      ludo.hideUnmovablePieces()
 
       ludo.$backdrop
         .addClass('hide')
@@ -524,7 +565,7 @@ class Ludo {
       if (
         ((!this.movablePieces || this.$pieceToMove.parent('.home').length) &&
           this.rolled.first !== 6) ||
-        !this.canMakeCorridorMove(sum)
+        !this.canMakeCorridorMove(this.rolled.first)
       ) {
         $move.addClass('not-movable')
       }
@@ -542,7 +583,7 @@ class Ludo {
       if (
         ((!this.movablePieces || this.$pieceToMove.parent('.home').length) &&
           this.rolled.second !== 6) ||
-        !this.canMakeCorridorMove(sum)
+        !this.canMakeCorridorMove(this.rolled.second)
       ) {
         $move.addClass('not-movable')
       }
@@ -583,9 +624,7 @@ class Ludo {
 }
 
 $(function () {
-  const ludo = new Ludo()
-
-  ludo.reset()
+  window.ludo = new Ludo()
 
   window.onbeforeunload = function (e) {
     if (ludo.playablePlayers.length) {
