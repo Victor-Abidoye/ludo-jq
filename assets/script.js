@@ -14,34 +14,55 @@ class Ludo {
   }
 
   activatePieces(state = true) {
-    if (!this.possibleMoves) {
+    if (state && !this.possibleMoves) {
       this.rolled.first = this.rolled.second = null
       return this.nextPlayer()
     }
 
     this.$backdrop.addClass('hide')
 
-    const player = this.getCurrentPlayer()
+    const { colors } = this.getCurrentPlayer()
 
     this.$centerMessage
       .html(
-        `Select a <strong>${player.colors
+        `Select a <strong>${colors
           .map((color) => color.toLowerCase())
           .join(' or ')}</strong> piece to move.`
       )
       .removeClass('hide')
 
     if (state) {
-      this.getRef(this.selector)
+      this.getRef(this.movableAllPiecesSelector)
         .addClass('active')
         .siblings('.piece-cover')
         .addClass('hide')
     } else {
-      this.getRef(this.selector)
+      this.getRef(this.movableAllPiecesSelector)
         .removeClass('active')
         .siblings('.piece-cover')
         .removeClass('hide')
     }
+  }
+
+  canMakeCorridorMove(move, pieceToMove) {
+    const $pieceToMove = $(pieceToMove || this.$pieceToMove)
+    const pieceColor = $pieceToMove.data('color')
+    const $pieceBox = $pieceToMove.parent()
+
+    if (!$pieceBox.hasClass('step')) {
+      return true
+    }
+
+    const pieceInCorridor = $pieceBox.hasClass('corridor')
+    const currentSpotNumber = parseInt($pieceBox.data('step'))
+
+    if (pieceInCorridor) {
+      return currentSpotNumber + move <= 6
+    } else if (currentSpotNumber <= this.corridorEntrances[pieceColor]) {
+      return move <= this.corridorEntrances[pieceColor] - currentSpotNumber + 6
+    }
+
+    return true
   }
 
   celebrateExit(piece) {
@@ -50,30 +71,108 @@ class Ludo {
     )
   }
 
-  countMovablePieces() {
-    const player = this.getCurrentPlayer()
+  celebrateWinner() {
+    const player = this.playablePlayers.splice(this.currentPlayer, 1)[0]
 
-    this.selector = ''
-    this.movablePieces = 0
+    this.rolled.first = this.rolled.second = null
+    this.winners.push(player)
+
+    let playerColors = ''
 
     player.colors.forEach((color) => {
+      if (playerColors) {
+        playerColors += '/'
+      }
+
+      playerColors += color
+
+      this.getRef(`.home.${color.toLowerCase()} .playing`).addClass('hide')
+    })
+
+    setTimeout(() =>
+      alert(`And we have a winner! Congrats Player "${playerColors}"`)
+    )
+  }
+
+  checkMoveKills() {
+    const $box = this.$pieceToMove.parent()
+
+    if (!$box.hasClass('step') || $box.hasClass('corridor')) {
+      return
+    }
+
+    const { colors } = this.getCurrentPlayer()
+
+    // TODO: Allow current player select which of the other players' pieces he wants to kill
+    const $firstOtherPieces = $box
+      .find(`.piece:not(${colors.join('):not(')})`)
+      .first()
+
+    if ($firstOtherPieces.length) {
+      const otherColor = $firstOtherPieces.data('color')
+
+      alert(`${this.$pieceToMove.data('color')} kills ${otherColor}`)
+
+      this.getRef(`.home.${otherColor}`).prepend($firstOtherPieces.detach())
+      this.getRef('#center').append(this.$pieceToMove.detach())
+
+      this.checkPlayerWins()
+    }
+  }
+
+  checkPlayerWins() {
+    if (
+      this.getRef(this.movablePiecesSelector).length ===
+      this.getRef('#center').find(this.movablePiecesSelector).length
+    ) {
+      this.celebrateWinner()
+    }
+  }
+
+  countMovablePieces() {
+    const { colors } = this.getCurrentPlayer()
+
+    this.movablePiecesSelector = ''
+    this.movableAllPiecesSelector = ''
+    this.movableHomePiecesSelector = ''
+    this.movableStepPiecesSelector = ''
+
+    this.movablePieces = 0
+
+    colors.forEach((color) => {
       color = color.toLowerCase()
 
-      if (this.selector) {
-        this.selector += ', '
+      if (this.movablePiecesSelector) {
+        this.movablePiecesSelector += ', '
+      }
+
+      this.movablePiecesSelector += `.piece.${color}`
+
+      if (this.movableAllPiecesSelector) {
+        this.movableAllPiecesSelector += ', '
+      }
+
+      if (this.movableHomePiecesSelector) {
+        this.movableHomePiecesSelector += ', '
       }
 
       if (this.rolled.first === 6 || this.rolled.second === 6) {
-        this.selector += `.home .piece.${color}`
+        this.movableAllPiecesSelector += `.home .piece.${color}`
+        this.movableHomePiecesSelector += `.home .piece.${color}`
       }
 
-      if (this.selector) {
-        this.selector += ', '
+      if (this.movableAllPiecesSelector) {
+        this.movableAllPiecesSelector += ', '
       }
 
-      this.selector += `.step .piece.${color}`
+      if (this.movableStepPiecesSelector) {
+        this.movableStepPiecesSelector += ', '
+      }
 
-      this.movablePieces += this.getRef(`.step .piece.${color}`).length
+      this.movableAllPiecesSelector += `.step .piece.${color}`
+      this.movableStepPiecesSelector += `.step .piece.${color}`
+
+      this.movablePieces += this.getRef(this.movableAllPiecesSelector).length
     })
   }
 
@@ -102,6 +201,8 @@ class Ludo {
     this.possibleMoves = 2
     this.doubleSixes = 0
 
+    this.winners = []
+    this.backdropClosable = false
     this.currentPlayer = -1
     this.$pieceToMove = null
   }
@@ -145,13 +246,15 @@ class Ludo {
         return
       }
 
-      this.getRef(`.corridor.${color}[data-step="${i + 1}"]`).append(
+      this.getRef(`.corridor.${color}[data-step="${5 - i}"]`).append(
         $(piece).detach()
       )
     })
   }
 
   diceRolled() {
+    this.backdropClosable = false
+
     if (!this.rolled.first || !this.rolled.second) {
       return
     }
@@ -162,7 +265,7 @@ class Ludo {
       this.doubleSixes++
 
       this.$centerMessage
-        .html('You rolled double 6. Roll more')
+        .html('You rolled double 6. Roll once more')
         .removeClass('hide')
 
       return this.nextPlayer()
@@ -171,19 +274,13 @@ class Ludo {
     // no moves
     if (
       !this.movablePieces &&
-      this.rolled.first !== 6 &&
-      this.rolled.second !== 6
+      ![this.rolled.first, this.rolled.second].includes(6)
     ) {
-      this.$backdrop.removeClass('hide')
-      this.$movements.removeClass('hide')
-      this.$moves.addClass('hide')
-
-      return this.$movementMessage
-        .removeClass('hide')
-        .children('span')
-        .text('You need a 6 to get your piece into the action.')
-        .siblings('button')
-        .focus()
+      return this.showMovementMessage(
+        'You need a 6 to get your piece into the action.'
+      )
+    } else if (!this.hasValidStepMoves()) {
+      return this.showMovementMessage('You do not have any valid move')
     }
 
     this.activatePieces()
@@ -193,6 +290,20 @@ class Ludo {
     this.playablePlayers = this.players.filter(
       (player) => !!player.colors.length
     )
+  }
+
+  gameEnded() {
+    let message = 'Game has ended!!!\n========================\n'
+    message +=
+      'Position | Player\n-------------------------------------------\n'
+
+    this.winners.forEach(({ colors }, index) => {
+      message += `${index + 1}             | ${colors.join(',')}\n`
+    })
+
+    alert(message)
+
+    this.reset()
   }
 
   getCurrentPlayer() {
@@ -207,6 +318,41 @@ class Ludo {
     return this.$container.find(selector)
   }
 
+  hasValidStepMoves() {
+    this.possibleMoves = 0
+
+    const moves = {
+      first: 0,
+      second: 0,
+    }
+
+    this.getRef(this.movableAllPiecesSelector).each((i, piece) => {
+      const $box = $(piece).parent()
+
+      if ($box.hasClass('home')) {
+        moves.first++
+        moves.second++
+      } else {
+        if (this.canMakeCorridorMove(this.rolled.first, piece)) {
+          moves.first++
+        }
+        if (this.canMakeCorridorMove(this.rolled.second, piece)) {
+          moves.second++
+        }
+      }
+    })
+
+    if (moves.first) {
+      this.possibleMoves++
+    }
+
+    if (moves.second) {
+      this.possibleMoves++
+    }
+
+    return !!this.possibleMoves
+  }
+
   hideUnmovablePieces() {
     this.getRef('.piece').addClass('hide')
 
@@ -217,26 +363,12 @@ class Ludo {
     })
   }
 
-  canMakeCorridorMove(move) {
-    const pieceColor = this.$pieceToMove.data('color')
-    const $pieceBox = this.$pieceToMove.parent()
-
-    if (!$pieceBox.hasClass('step')) {
-      return true
-    }
-
-    const pieceInCorridor = $pieceBox.hasClass('corridor')
-    const currentSpotNumber = parseInt($pieceBox.data('step'))
-
-    if (pieceInCorridor) {
-      return currentSpotNumber + move <= 6
-    } else {
-      return move <= this.corridorEntrances[pieceColor] - currentSpotNumber + 6
-    }
-  }
-
   move(steps) {
     if (!steps) {
+      this.checkMoveKills()
+
+      this.$pieceToMove.removeClass('moving')
+
       if (this.rolled.first || this.rolled.second) {
         this.activatePieces()
       } else if (this.doubleSixes) {
@@ -250,19 +382,16 @@ class Ludo {
       return
     }
 
+    this.$pieceToMove.addClass('moving')
+
     if (steps >= 6 && this.$pieceToMove.parent('.home').length) {
       this.getRef(`td.start.${this.$pieceToMove.data('color')}`).append(
         this.$pieceToMove.detach()
       )
 
-      if (steps > 6) {
-        setTimeout(() => {
-          this.move(steps - 6)
-        }, 300)
-      } else {
-        this.activatePieces()
-      }
-      return
+      return setTimeout(() => {
+        this.move(steps > 6 ? steps - 6 : 0)
+      }, 300)
     }
 
     this.activatePieces(false)
@@ -289,15 +418,19 @@ class Ludo {
     }
     // Piece won from corridor
     else if (this.$pieceToMove.parent().hasClass('corridor')) {
-      this.$pieceToMove.addClass('hide')
+      this.getRef('#center').append(this.$pieceToMove.detach())
 
-      setTimeout(() => this.celebrateExit(this.$pieceToMove))
+      setTimeout(() => {
+        this.celebrateExit(this.$pieceToMove)
+
+        this.checkPlayerWins()
+      })
     }
     // Invalid move
     else {
       alert("That's an invalid move")
 
-      return this.activatePieces()
+      return this.move(0)
     }
 
     setTimeout(() => {
@@ -306,18 +439,21 @@ class Ludo {
   }
 
   nextPlayer() {
-    this.possibleMoves = 2
-    this.$backdrop.addClass('hide')
+    if (!this.playablePlayers.length) {
+      return this.gameEnded()
+    }
 
     this.getRef('.piece.active')
       .removeClass('active')
       .siblings('.piece-cover')
       .removeClass('hide')
+
     this.$rollBtns
       .addClass('hide')
       .parent()
       .siblings('.playing')
       .addClass('hide')
+
     this.$backdrop.addClass('hide')
 
     if (!this.doubleSixes) {
@@ -332,19 +468,43 @@ class Ludo {
     this.getCurrentPlayer().colors.forEach((color) => {
       color = color.toLowerCase()
 
-      this.getRef(`.home.${color} .roll`).removeClass('hide').focus()
+      this.getRef(`.home.${color} .piece-cover`)
+        .removeClass('hide')
+        .children('.roll')
+        .removeClass('hide')
+        .focus()
     })
   }
 
   reset() {
+    const ludo = this
+
     // returns pieces to home
-    this.getRef('.step .piece').each(function () {
+    this.getRef('.piece').each(function () {
       const $this = $(this)
       const color = $this.data('color')
 
-      this.getRef(`.home.${color}`).append($this.removeClass('hide').detach())
+      ludo
+        .getRef(`.home.${color}`)
+        .prepend($this.removeClass('hide').detach())
+        .find('.playing')
+        .addClass('hide')
+        .siblings('.piece-cover')
+        .removeClass('hide')
+        .children('.roll')
+        .addClass('hide')
     })
+
+    this.$centerMessage.addClass('hide')
+    this.$movements.addClass('hide')
+    this.$movementMessage.addClass('hide')
+
     this.createDefaults()
+    this.restorePlayers()
+
+    this.$backdrop.removeClass('hide').children('#options').removeClass('hide')
+
+    this.$playBtn.focus()
   }
 
   restorePlayers() {
@@ -376,6 +536,12 @@ class Ludo {
   setupEvents() {
     const ludo = this
 
+    this.$backdrop.click(function () {
+      if (ludo.backdropClosable) {
+        ludo.$backdrop.addClass('hide')
+      }
+    })
+
     this.$links.click(function (e) {
       e.preventDefault()
 
@@ -389,6 +555,8 @@ class Ludo {
         ludo.showMoves()
       } else if ($this.hasClass('move') && !$this.hasClass('not-movable')) {
         let steps = 0
+
+        // TODO: Show current player list of colors at the same position
 
         ludo.possibleMoves--
 
@@ -555,6 +723,8 @@ class Ludo {
 
     this.$backdrop.removeClass('hide')
 
+    let options = 0
+
     if (this.rolled.first) {
       const $move = this.$moves
         .children('.first')
@@ -568,6 +738,8 @@ class Ludo {
         !this.canMakeCorridorMove(this.rolled.first)
       ) {
         $move.addClass('not-movable')
+      } else {
+        options++
       }
     } else {
       this.$moves.children('.first').addClass('moved')
@@ -586,6 +758,8 @@ class Ludo {
         !this.canMakeCorridorMove(this.rolled.second)
       ) {
         $move.addClass('not-movable')
+      } else {
+        options++
       }
     } else {
       this.$moves.children('.second').addClass('moved')
@@ -603,28 +777,45 @@ class Ludo {
       // sum exceed required to exit game
       if (!this.canMakeCorridorMove(sum)) {
         $move.addClass('not-movable')
-        if (this.movablePieces === 1) {
-          this.possibleMoves = 1
-        }
+      } else {
+        options++
       }
     } else {
       this.$moves.children('.sum').addClass('moved')
     }
 
-    if (
-      this.movablePieces &&
-      this.$pieceToMove.parent('.step').length &&
-      this.rolled.first &&
-      this.rolled.second
-    ) {
-    }
+    if (this.possibleMoves) {
+      if (!options) {
+        this.showMovementMessage('You cannot move this piece')
+      } else if (
+        this.possibleMoves === 1 &&
+        this.rolled.first !== null &&
+        this.rolled.second !== null
+      ) {
+        this.showMovementMessage('This would be your only move')
+      }
 
-    this.$moves.removeClass('hide')
+      this.backdropClosable = true
+      this.$moves.removeClass('hide')
+    }
+  }
+
+  showMovementMessage(message) {
+    this.$backdrop.removeClass('hide')
+    this.$movements.removeClass('hide')
+    this.$moves.addClass('hide')
+
+    return this.$movementMessage
+      .removeClass('hide')
+      .children('span')
+      .text(message)
+      .siblings('button')
+      .focus()
   }
 }
 
 $(function () {
-  window.ludo = new Ludo()
+  const ludo = new Ludo()
 
   window.onbeforeunload = function (e) {
     if (ludo.playablePlayers.length) {

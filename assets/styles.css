@@ -111,6 +111,10 @@ td#center .message {
   color: whitesmoke;
 }
 
+td#center .piece {
+  display: none;
+}
+
 .yellow:not(.home) {
   background-color: yellow !important;
 }
@@ -127,7 +131,8 @@ td#center .message {
   background-color: red !important;
 }
 
-.home {
+.home,
+#center {
   background-color: bisque !important;
   background-size: cover;
   position: relative;
@@ -162,6 +167,11 @@ td#center .message {
 
 .piece.active {
   z-index: 9;
+}
+
+.piece.moving {
+  z-index: 10;
+  border-style: dashed;
 }
 
 .piece > div {
@@ -267,7 +277,6 @@ td#center .message {
   right: 50vh;
 }
 
-#movements,
 .moves {
   display: flex;
   justify-content: space-evenly;
@@ -311,6 +320,14 @@ td#center .message {
   width: 100%;
   padding: 5px;
   text-align: center;
+}
+
+.moves:not(.hide) + .message {
+  margin-top: 10px;
+}
+
+.moves:not(.hide) + .message > button {
+  display: none;
 }
 
 .hide {
