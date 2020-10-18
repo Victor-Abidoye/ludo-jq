@@ -31,7 +31,8 @@ a {
 }
 
 #options,
-#movements {
+#movements,
+#step-pieces {
   min-width: 20vw;
   max-width: 80vw;
   background-color: bisque;
@@ -132,7 +133,8 @@ td#center .piece {
 }
 
 .home,
-#center {
+#center,
+#step-pieces {
   background-color: bisque !important;
   background-size: cover;
   position: relative;
@@ -222,6 +224,12 @@ td#center .piece {
   border-color: whitesmoke;
 }
 
+#step-pieces .piece {
+  width: 6vh;
+  height: 6vh;
+  position: relative;
+}
+
 .home .roll,
 .home .playing {
   position: absolute;
@@ -277,7 +285,8 @@ td#center .piece {
   right: 50vh;
 }
 
-.moves {
+.moves,
+.step-pieces {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
@@ -303,7 +312,8 @@ td#center .piece {
   padding: 5px;
 }
 
-.moves .move {
+.moves .move,
+.step-pieces .piece {
   padding: 20px;
   border: 2px dashed;
 }
@@ -314,12 +324,17 @@ td#center .piece {
   border-width: 1px;
 }
 
-#movements .message {
+#movements .message,
+#step-pieces .message {
   background-color: tomato;
   color: whitesmoke;
   width: 100%;
   padding: 5px;
   text-align: center;
+}
+
+#step-pieces .message {
+  margin-top: 10px;
 }
 
 .moves:not(.hide) + .message {
@@ -359,6 +374,10 @@ td#center .piece {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  td#center .message {
+    position: fixed;
   }
 
   #die-1 {
