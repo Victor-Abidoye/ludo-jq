@@ -349,6 +349,19 @@ td#center .piece {
   display: none !important;
 }
 
+.github {
+  opacity: .5;
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+  background-color: yellowgreen;
+}
+
+.github:hover {
+  opacity: 1;
+}
+
 @keyframes playing {
   from {
     background-color: sienna;
@@ -398,5 +411,12 @@ td#center .piece {
 
   #options select {
     margin-bottom: 10px;
+  }
+
+  .github {
+    opacity: 1;
+    position: relative;
+    width: 100%;
+    text-align: center;
   }
 }

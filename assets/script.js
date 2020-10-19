@@ -120,6 +120,7 @@ class Ludo {
     ) {
       this.celebrateWinner()
       this.rolled = []
+      this.currentPlayer--
     }
   }
 
@@ -179,7 +180,7 @@ class Ludo {
   createRefs () {
     this.$backdrop = this.getRef('#backdrop')
     this.$centerMessage = this.getRef('#center .message')
-    this.$links = this.getRef('a')
+    this.$links = this.getRef('a:not(.regular)')
     this.$rollBtns = this.getRef('.roll')
 
     this.$movements = this.$backdrop.find('#movements')
@@ -205,7 +206,9 @@ class Ludo {
         return
       }
 
-      this.getRef(`.corridor.${color}[data-step="${5 - i}"]`).append(
+      const entranceNumber = this.getRef(`.corridor-entrance[data-color="${color}"]`).data('step')
+
+      this.getRef(`.step[data-step="${entranceNumber - 2 - i}"]`).append(
         $(piece).detach()
       )
     })
@@ -254,7 +257,7 @@ class Ludo {
 
   gameEnded () {
     if (this.playablePlayers.length) {
-      this.winners.push(this.playablePlayers.splice(0, 1))
+      this.winners = [...this.winners, ...this.playablePlayers]
     }
 
     let message = 'Game has ended!!!\n========================\n'
@@ -345,10 +348,11 @@ class Ludo {
           moves.first = true
           moves.second = true
         } else {
-          if (this.canMakeCorridorMove(first, piece)) {
+          if (first && this.canMakeCorridorMove(first, piece)) {
             moves.first = true
           }
-          if (this.canMakeCorridorMove(second, piece)) {
+
+          if (second && this.canMakeCorridorMove(second, piece)) {
             moves.second = true
           }
         }
@@ -400,6 +404,8 @@ class Ludo {
   move (steps) {
     if (!steps) {
       return this.checkMoveKills(() => {
+        this.hasValidStepMoves()
+
         this.$pieceToMove.removeClass('moving')
 
         // has one more move to make
@@ -921,7 +927,7 @@ class Ludo {
 }
 
 $(function () {
-  window.ludo = new Ludo()
+  const ludo = new Ludo()
 
   window.onbeforeunload = function (e) {
     if (ludo.playablePlayers.length) {
