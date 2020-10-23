@@ -101,34 +101,23 @@ td#center {
   background-image: url(img/yinyang.png);
 }
 
-td#center .message {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 5px;
-  text-align: center;
-  background-color: teal;
-  color: whitesmoke;
-}
-
 td#center .piece {
   display: none;
 }
 
-.yellow:not(.home) {
+.yellow:not(.no-color) {
   background-color: yellow !important;
 }
 
-.green:not(.home) {
+.green:not(.no-color) {
   background-color: green !important;
 }
 
-.blue:not(.home) {
+.blue:not(.no-color) {
   background-color: blue !important;
 }
 
-.red:not(.home) {
+.red:not(.no-color) {
   background-color: red !important;
 }
 
@@ -219,8 +208,9 @@ td#center .piece {
   padding-bottom: 0;
 }
 
-.step.blue .piece.blue,
-.step.green .piece.green {
+.step.blue .piece,
+.step.green .piece,
+.step.red .piece {
   border-color: whitesmoke;
 }
 
@@ -239,7 +229,7 @@ td#center .piece {
   top: calc(50% - 30px);
 }
 
-.home .roll {
+.roll {
   background-color: tomato;
 }
 
@@ -283,6 +273,20 @@ td#center .piece {
 
 #die-2 {
   right: 50vh;
+}
+
+.center-message {
+  padding: 5px;
+  text-align: center;
+  background-color: teal;
+  color: whitesmoke;
+}
+
+.center-message.desktop {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 
 .moves,
@@ -372,33 +376,49 @@ td#center .piece {
   }
 }
 
+@media (min-width: 768px) {
+  .mobile {
+    display: none;
+  }
+}
+
 @media (max-width: 767px) {
+  .desktop {
+    display: none!important;
+  }
+
   #play-area {
     width: 100vw;
     height: 100vw;
   }
 
-  #backdrop,
-  #dice {
-    position: absolute;
-    top: 0;
+  #backdrop {
     width: 100vw;
-    height: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 100vh;
   }
 
-  td#center .message {
-    position: fixed;
+  #dice {
+    position: unset;
+    top: unset;
+    width: unset;
+    height: 10vh;
+    padding: 10px;
+  }
+
+  .die {
+    position: relative;
+    height: 10vh;
+    width: 10vh;
   }
 
   #die-1 {
-    left: 40vw;
+    left: unset;
+    /* left: 40vw; */
   }
 
   #die-2 {
-    right: 42vw;
+    right: unset;
+    /* right: 42vw; */
   }
 
   #options {
@@ -413,10 +433,30 @@ td#center .piece {
     margin-bottom: 10px;
   }
 
+  .roll {
+    position: unset;
+    padding: 16px;
+    border-radius: 16px;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .home .playing {
+    position: absolute;
+    padding: 7px;
+    border-radius: 16px;
+    left: calc(50% - 43px);
+    top: calc(50% - 15px);
+  }
+
+  #movements {
+    top: unset;
+    bottom: 0;
+  }
+
   .github {
     opacity: 1;
-    position: relative;
-    width: 100%;
     text-align: center;
+    position: unset;
   }
 }

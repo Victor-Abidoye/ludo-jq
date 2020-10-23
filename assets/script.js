@@ -21,17 +21,17 @@ class Ludo {
 
     this.$backdrop.addClass('hide')
 
-    const { colors } = this.getCurrentPlayer()
-
-    this.$centerMessage
-      .html(
-        `Select a <strong>${colors
-          .map((color) => color.toLowerCase())
-          .join(' or ')}</strong> piece to move.`
-      )
-      .removeClass('hide')
-
     if (state) {
+      const { colors } = this.getCurrentPlayer()
+
+      this.$centerMessage
+        .html(
+          `Select a <strong>${colors
+            .map((color) => color.toLowerCase())
+            .join(' or ')}</strong> piece to move.`
+        )
+        .removeClass('hide')
+
       this.getRef(this.movablePiecesSelector)
         .addClass('active')
         .siblings('.piece-cover')
@@ -77,9 +77,6 @@ class Ludo {
     this.winners.push(player)
 
     let playerColors = player.colors.join('/')
-    this.getRef(this.getPlayerColorsSelector('.home', ' .playing')).addClass(
-      'hide'
-    )
 
     setTimeout(() =>
       alert(`And we have a winner! Congrats Player "${playerColors}"`)
@@ -179,7 +176,7 @@ class Ludo {
 
   createRefs () {
     this.$backdrop = this.getRef('#backdrop')
-    this.$centerMessage = this.getRef('#center .message')
+    this.$centerMessage = this.getRef('.center-message')
     this.$links = this.getRef('a:not(.regular)')
     this.$rollBtns = this.getRef('.roll')
 
@@ -194,6 +191,7 @@ class Ludo {
     this.$stepPieces = this.$backdrop.children('#step-pieces')
 
     this.$playBtn = this.$options.find('#play')
+    this.$dice = this.getRef('#dice')
   }
 
   debug (color, count) {
@@ -504,7 +502,7 @@ class Ludo {
     this.$backdrop.addClass('hide')
 
     if (!this.rolled.length) {
-      this.$centerMessage.addClass('hide')
+      this.$centerMessage.text('Roll dice').removeClass('hide')
       this.currentPlayer++
     }
 
@@ -512,11 +510,21 @@ class Ludo {
       this.currentPlayer = 0
     }
 
-    this.getRef(this.getPlayerColorsSelector('.home', ' .piece-cover'))
+    this.getRef(this.getPlayerColorsSelector('.piece'))
+      .addClass('active')
+
+      .parent('.home')
+      .find('.playing')
       .removeClass('hide')
+
+      .siblings('.piece-cover')
+      .removeClass('hide')
+
       .children('.roll')
       .removeClass('hide')
       .focus()
+
+    this.getRef('.roll.mobile').removeClass('hide')
   }
 
   reset () {
@@ -534,8 +542,8 @@ class Ludo {
         .addClass('hide')
         .siblings('.piece-cover')
         .removeClass('hide')
-        .children('.roll')
-        .addClass('hide')
+
+      ludo.$rollBtns.addClass('hide')
     })
 
     this.$centerMessage.addClass('hide')

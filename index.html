@@ -8,9 +8,18 @@
   </head>
   <body>
     <div id="play-area">
+      <div class="github">
+        <a href="https://github.com/ezra-obiwale/ludo-jq" target="_blank" class="regular">GitHub</a>
+      </div>
+
+      <div id="dice">
+        <div id="die-1" class="die"></div>
+        <div id="die-2" class="die"></div>
+      </div>
+
       <table id="board" cellspacing="0" cellpadding="0">
         <tr>
-          <td rowspan="6" colspan="6" class="yellow home">
+          <td rowspan="6" colspan="6" class="yellow home no-color">
             <a href="#" class="piece yellow" data-color="yellow"></a>
             <a href="#" class="piece yellow" data-color="yellow"></a>
             <a href="#" class="piece yellow" data-color="yellow"></a>
@@ -19,7 +28,7 @@
             <div class="playing hide">PLAYING</div>
 
             <div class="piece-cover">
-              <button class="roll hide">ROLL DICE</button>
+              <button class="roll desktop hide">ROLL DICE</button>
             </div>
           </td>
           <td data-step="11" class="step">
@@ -31,7 +40,7 @@
           <td data-step="13" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td rowspan="6" colspan="6" class="green home">
+          <td rowspan="6" colspan="6" class="green home no-color">
             <a href="#" class="piece green" data-color="green"></a>
             <a href="#" class="piece green" data-color="green"></a>
             <a href="#" class="piece green" data-color="green"></a>
@@ -40,7 +49,7 @@
             <div class="playing hide">PLAYING</div>
 
             <div class="piece-cover">
-              <button class="roll hide">ROLL DICE</button>
+              <button class="roll desktop hide">ROLL DICE</button>
             </div>
           </td>
         </tr>
@@ -120,7 +129,7 @@
             <div class="piece-cover"></div>
           </td>
           <td id="center" rowspan="3" colspan="3">
-            <div class="message hide"></div>
+            <div class="center-message desktop hide"></div>
           </td>
           <td data-step="19" class="step">
             <span class="arrow se">&rarr;</span>
@@ -221,7 +230,7 @@
           </td>
         </tr>
         <tr>
-          <td rowspan="6" colspan="6" class="blue home">
+          <td rowspan="6" colspan="6" class="blue home no-color">
             <a href="#" class="piece blue" data-color="blue"></a>
             <a href="#" class="piece blue" data-color="blue"></a>
             <a href="#" class="piece blue" data-color="blue"></a>
@@ -230,7 +239,7 @@
             <div class="playing hide">PLAYING</div>
 
             <div class="piece-cover">
-              <button class="roll hide">ROLL DICE</button>
+              <button class="roll desktop hide">ROLL DICE</button>
             </div>
           </td>
           <td data-step="44" class="step">
@@ -242,7 +251,7 @@
           <td data-step="32" class="step">
             <div class="piece-cover"></div>
           </td>
-          <td rowspan="6" colspan="6" class="red home">
+          <td rowspan="6" colspan="6" class="red home no-color">
             <a href="#" class="piece red" data-color="red"></a>
             <a href="#" class="piece red" data-color="red"></a>
             <a href="#" class="piece red" data-color="red"></a>
@@ -251,7 +260,7 @@
             <div class="playing hide">PLAYING</div>
 
             <div class="piece-cover">
-              <button class="roll hide">ROLL DICE</button>
+              <button class="roll desktop hide">ROLL DICE</button>
             </div>
           </td>
         </tr>
@@ -312,14 +321,9 @@
         </tr>
       </table>
 
-      <div class="github">
-        <a href="https://github.com/ezra-obiwale/ludo-jq" target="_blank" class="regular">GitHub</a>
-      </div>
+      <div class="center-message mobile hide"></div>
 
-      <div id="dice">
-        <div id="die-1" class="die"></div>
-        <div id="die-2" class="die"></div>
-      </div>
+      <button class="roll mobile hide">ROLL DICE</button>
 
       <div id="backdrop">
         <div id="options">
