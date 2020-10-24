@@ -252,6 +252,7 @@ td#center .piece {
 
 #dice {
   padding: 5px 0;
+  z-index: 1;
 }
 
 .dice {
@@ -268,11 +269,11 @@ td#center .piece {
 }
 
 #die-1 {
-  left: 50vh;
+  right: 50vh;
 }
 
 #die-2 {
-  right: 50vh;
+  left: 50vh;
 }
 
 .center-message {
@@ -326,6 +327,7 @@ td#center .piece {
 .moves .not-movable {
   background-color: darkgray;
   border-width: 1px;
+  cursor: not-allowed;
 }
 
 #movements .message,
@@ -412,13 +414,11 @@ td#center .piece {
   }
 
   #die-1 {
-    left: unset;
-    /* left: 40vw; */
+    right: unset;
   }
 
   #die-2 {
-    right: unset;
-    /* right: 42vw; */
+    left: unset;
   }
 
   #options {
